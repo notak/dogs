@@ -58,22 +58,6 @@ export function gteLt (lower: number, v: number, higher: number) {
 	return v>=lower && v<higher
 }
 
-export function arrayEq(a: any[], b: any[]) {
-	return a.length==b.length && a.every((v,i)=> v === b[i])
-}
-
-export function inArray<Y>(haystack: Y[], needle: Y) {
-	return haystack.indexOf(needle)>=0;
-}
-
-export function after<V>(haystack: V[], subject: V, object: V) {
-	return haystack.indexOf(subject) > haystack.indexOf(object);
-}
-
-export function last<V>(haystack: V[]): V|undefined {
-	return haystack.length ? haystack.slice(-1).pop() : undefined;
-}
-
 export class FMap<K, V> {
 	public map = new Map<K, V>();
 	get(k: K) { return this.map.get(k); }
@@ -91,29 +75,16 @@ export class FMap<K, V> {
 	}
 }
 
-export function blobToDataURL(file: Blob) {
-	const reader = new FileReader();
-	let s: Consumer<string>;
-	let out = new Promise<string>((r,e)=>s=r);
-	reader.onload = (e)=>s(<string>(<any>e.target).result);
-	reader.readAsDataURL(file);
-	return out;
+export function blobToDataURL(file: Blob): Promise<string> {
+	return new Promise<string>((r,e)=>{
+		const reader = new FileReader();
+		reader.onload = (e)=>r(<string>(<any>e.target).result);
+		reader.readAsDataURL(file);
+	});
 }
 
 export function ifTruthy<T,R> (
-	v: T|undefined|null, action: UFunction<T, R>, def?: R
+	v: T|undefined|null, action: UFunction<T, R>
 ) : R|undefined {
 	return v ? action(v) : undefined;
-}
-
-export function arrayToMap<T,K> (array: T[], keyer: UFunction<T, K>): Map<K,T> {
-	const out = new Map();
-	array.forEach(i=>out.set(keyer(i), i));
-	return out;
-}
-
-export function arrayRemove<T>(haystack: T[], needle: T): number {
-	const current = haystack.indexOf(needle);
-	if (current>=0) haystack.splice(current, 1);
-	return current;
 }

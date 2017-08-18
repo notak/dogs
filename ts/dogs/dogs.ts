@@ -1,36 +1,32 @@
 import { asInt, Consumer } from "./utils.js";
 
-console.log("in dogs prep");
-
 //Edge polyfill
 let w:any = window
 if (w["Element"]) {
-	let ep = Element.prototype;
+	const ep = Element.prototype;
 	ep["matches"] = ep["matches"] || ep["msMatchesSelector"];
 }
 
-export function scrollMinimallyIntoView(e: HTMLElement, parent?: HTMLElement) {
-	if (parent === undefined) parent = <HTMLElement>e.parentElement;
-	let top = e.offsetTop - parent.offsetTop;
-	let pScrollTop = parent.scrollTop;
-	if (top + e.clientHeight > pScrollTop + parent.clientHeight
-		|| top < pScrollTop
+export function scrollMinimallyIntoView(e: HTMLElement, parentE?: HTMLElement) {
+	const p = parentE || parent(e);
+	const top = e.offsetTop - p.offsetTop;
+	if (top + e.clientHeight > p.scrollTop + p.clientHeight
+		|| top < p.scrollTop
 	) {
-		e.scrollIntoView(top < pScrollTop);
+		e.scrollIntoView(top < p.scrollTop);
 	}
 }
 
-export function scrollxMinimallyIntoView(e: HTMLElement, parent?: HTMLElement) {
-	if (parent===undefined) parent = <HTMLElement>e.parentElement;
-	let left = e.offsetLeft - parent.offsetLeft;
-	let pScrollLeft = parent.scrollLeft;
-	if (left + e.clientWidth > pScrollLeft + parent.clientWidth
-		|| left < pScrollLeft
+export function scrollxMinimallyIntoView(e: HTMLElement, parentE?: HTMLElement) {
+	const p = parentE || parent(e);
+	const left = e.offsetLeft - p.offsetLeft;
+	if (left + e.clientWidth > p.scrollLeft + p.clientWidth
+		|| left < p.scrollLeft
 	) {
-		parent.scrollLeft = 
-			left < pScrollLeft
+		p.scrollLeft = 
+			left < p.scrollLeft
 			? e.offsetLeft
-			: e.offsetLeft + e.clientWidth - parent.clientWidth;
+			: e.offsetLeft + e.clientWidth - p.clientWidth;
 	}
 }
 
@@ -129,27 +125,4 @@ export function allInputs(e: HTMLElement, selector: string): HTMLInputElement[] 
 }
 export function allImages(e: HTMLElement, selector: string): HTMLImageElement[] {
 	return <HTMLImageElement[]>all(e, selector);
-}
-
-export class Classes {
-	readonly c: DOMTokenList;
-	constructor(e: HTMLElement) {
-		this.c = e.classList;
-	}
-	add(...names: string[]) {
-		names.forEach(n=>this.c.add(n));
-		return this;
-	}
-	remove(...names: string[]) {
-		names.forEach(n=>this.c.remove(n));
-		return this;
-	}
-	toggle(name: string, set: boolean) {
-		this.c.toggle(name, set);
-		return this;
-	}
-}
-
-export function classes(e: HTMLElement) {
-	return new Classes(e);
 }
