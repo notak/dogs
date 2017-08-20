@@ -15,9 +15,10 @@ export interface MouseEventHandler {
 }
 
 export function delegateClick(
-	e: HTMLElement, selector: string, handler: MouseEventHandler
+	e: HTMLElement, selector: string, handler: MouseEventHandler, 
+	useCapture=true
 ) {
-	return delegate(e, "click", selector, handler);
+	return delegate(e, "click", selector, handler, useCapture);
 }
 
 export function delegateKey(
