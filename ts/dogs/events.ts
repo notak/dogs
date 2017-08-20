@@ -54,10 +54,10 @@ export function onClick(e: HTMLElement, handler: EventHandler) {
 }
 
 export function onKey(e: HTMLElement, event: string, handler: KeyEventHandler) {
-	return this.on("key" + event, handler);
+	return on(e, "key" + event, handler);
 }
 export function onKeyDown(e: HTMLElement, handler: KeyEventHandler) {
-	return this.on("keydown", handler);
+	return on(e, "keydown", handler);
 }
 
 export function onKeycode(

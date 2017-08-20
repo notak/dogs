@@ -24,8 +24,12 @@ export function after<V>(haystack: V[], subject: V, object: V) {
 	return haystack.indexOf(subject) > haystack.indexOf(object);
 }
 
-export function last<V>(haystack: V[]): V|undefined {
-	return haystack.length ? haystack[haystack.length-1] : undefined;
+export function last<V>(haystack: V[]): V {
+	return haystack[haystack.length-1];
+}
+
+export function lastIfAny<V>(haystack: V[]): V|undefined {
+	return haystack.length ? last(haystack) : undefined;
 }
 
 export function min(a: Array<number>) { return Math.min.apply(null, a); }

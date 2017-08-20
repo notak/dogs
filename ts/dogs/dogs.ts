@@ -44,6 +44,10 @@ export function find(querySelector: string) {
 	return <HTMLElement>document.querySelector(querySelector);
 }
 
+export function every(querySelector: string) {
+	return <HTMLElement[]>Array.from(document.querySelectorAll(querySelector));
+}
+
 export function parent<T extends Element>(e: T) {
 	return <T>(e.parentNode);
 }
@@ -56,7 +60,7 @@ export function prev<T extends Element> (e: T) {
 }
 
 export function children<T extends Element>(e: T) {
-	return <T[]>(Array.from(this._e.childNodes));
+	return <T[]>(Array.from(e.childNodes));
 }
 export function firstChild<T extends Element> (e: T) {
 	return <T>e.firstElementChild;
