@@ -65,12 +65,13 @@ export class FMap<K, V> {
 	delete(k: K) { return this.map.delete(k); }
 		
 	run(k: K, action: Consumer<V>) {
-		let v = this.map.get(k);
-		if (v) action(v);
+		ifTruthy(this.map.get(k), action);
 	}
+
+	/** computeIfAbsent in Java terms */
 	getOrSet(k: K, provider: Provider<V>) { 
-		let v = this.map.get(k);
-		if (!v) this.map.set(k, v = provider());
+		let v = this.get(k);
+		if (!v) this.set(k, v = provider());
 		return v;
 	}
 }
@@ -87,4 +88,9 @@ export function ifTruthy<T,R> (
 	v: T|undefined|null, action: UFunction<T, R>
 ) : R|undefined {
 	return v ? action(v) : undefined;
+}
+
+export function logAndReturn(s: any) {
+	console.log(s);
+	return s;
 }
