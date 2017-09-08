@@ -12,6 +12,17 @@ export function remove<T>(haystack: T[], needle: T): number {
 	return current;
 }
 
+export function indexOfMatching<T>(haystack: T[], test: UFunction<T, boolean>): number {
+	for (let i=0; i<haystack.length; i++) if (test(haystack[i])) return i;
+	return -1;	
+}
+
+export function removeMatching<T>(haystack: T[], test: UFunction<T, boolean>): number {
+	const current = indexOfMatching(haystack, test);
+	if (current>=0) haystack.splice(current, 1);
+	return current;
+}
+
 export function equals(a: any[], b: any[]) {
 	return a.length==b.length && a.every((v,i)=> v === b[i])
 }

@@ -69,6 +69,10 @@ export function lastChild<T extends Element> (e: T) {
 	return <T>e.lastElementChild;
 }
 
+export function hasClass(e: HTMLElement, c: string) {
+	return e.classList.contains(c);
+}
+
 export function hasDescendant(parent: Element, e: Element) {
 	for (; e; e = <Element>e.parentElement) if (e == parent) return true;
 	return false;
