@@ -49,8 +49,10 @@ export function on(
 ) {
 	e.addEventListener(event, evt=>handler(evt, e));
 }
-
-export function onClick(e: HTMLElement, handler: EventHandler) {
+export function onMouse(e: HTMLElement, event: string, handler: MouseEventHandler) {
+	return on(e, "mouse" + event, handler);
+}
+export function onClick(e: HTMLElement, handler: MouseEventHandler) {
 	on(e, "click", handler);
 }
 
@@ -98,4 +100,7 @@ export function killAnd<T extends Event>(e: T, handler: Consumer<T>) {
 	if (e.cancelBubble) (<any>e).cancelBubble();
 	handler(e);
 }
-
+export function killEvent(e: Event) {
+	e.preventDefault();
+	if (e.cancelBubble) (<any>e).cancelBubble();
+}

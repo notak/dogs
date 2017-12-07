@@ -1,4 +1,4 @@
-import { asInt, Consumer } from "./utils.js";
+import { asInt, Consumer, UFunction } from "./utils.js";
 
 //Edge polyfill
 let w:any = window
@@ -40,6 +40,10 @@ export interface HTMLElementFn {
 	(): HTMLElement|undefined
 }
 
+export function attr(e: Element, name: string) {
+	return e.getAttribute(name);
+}
+
 export function find(querySelector: string) {
 	return <HTMLElement>document.querySelector(querySelector);
 }
@@ -60,13 +64,17 @@ export function prev<T extends Element> (e: T) {
 }
 
 export function children<T extends Element>(e: T) {
-	return <T[]>(Array.from(e.childNodes));
+	return <T[]>(Array.from(e.children));
 }
 export function firstChild<T extends Element> (e: T) {
 	return <T>e.firstElementChild;
 }
 export function lastChild<T extends Element> (e: T) {
 	return <T>e.lastElementChild;
+}
+export function firstChildMatching<T extends Element>
+(e: T, filter: UFunction<T, boolean>) {
+	return <T>(children(e).filter(filter).pop());
 }
 
 export function hasClass(e: HTMLElement, c: string) {
@@ -84,12 +92,12 @@ export function css(e: HTMLElement) {
 
 export function hide(e: HTMLElement) { 
 	if (e.style.display=="none") return;
-	e.dataset["prev-display-value"] = e.style.display || undefined;
+	e.dataset["prevDisplayValue"] = e.style.display || "";
 	e.style.display = "none"; 
 }
 
 export function show(e: HTMLElement) {
-	e.style.display = e.dataset["prev-display-value"] || "block";
+	e.style.display = e.dataset["prevDisplayValue"] || "block";
 }
 
 export function isHidden(e: HTMLElement) {
@@ -109,6 +117,9 @@ function selectorStart(e: Element) {
 	return out.join(" ") + " ";
 }
 
+export function clone<T extends Element>(e: T): T {
+	return <T>e.cloneNode();
+}
 export function first<T extends Element>(e: T, selector: string): T {
 	return <T>e.querySelector(selectorStart(e) + selector);
 }

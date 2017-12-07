@@ -74,6 +74,9 @@ export class FMap<K, V> {
 		if (!v) this.set(k, v = provider());
 		return v;
 	}
+	forEach(consumer: Consumer<V>) {
+		this.map.forEach(consumer);
+	}
 }
 
 export function blobToDataURL(file: Blob): Promise<string> {
