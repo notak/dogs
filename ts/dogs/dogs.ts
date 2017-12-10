@@ -64,7 +64,7 @@ export function prev<T extends Element> (e: T) {
 }
 
 export function children<T extends Element>(e: T) {
-	return <T[]>(Array.from(e.children));
+	return <T[]>(Array.from(e.children || []));
 }
 export function firstChild<T extends Element> (e: T) {
 	return <T>e.firstElementChild;
