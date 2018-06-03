@@ -7,6 +7,35 @@ if (w["Element"]) {
 	ep["matches"] = ep["matches"] || ep["msMatchesSelector"];
 }
 
+export function setChildText(el: HTMLElement, clsName: string, text: string) {
+    all(el, "." + clsName).forEach(e=>e.innerText = text);
+}
+export function setChildTexts(el: HTMLElement, values: any) {
+    for(let k in values) setChildText(el, k, values[k]);
+}
+
+export function createEl(tagName = "div", ...classes: string[] ) {
+    const e = document.createElement(tagName);
+    classes.forEach(c=>e.classList.add(c));
+    return e;
+}
+export function createTextEl(tag: string, className: string, text: string) {
+    const e = document.createElement(tag);
+    e.className = className;
+    e.innerText = text;
+    return e;
+}
+export function createImage(src: string, ...classes: string[] ) {
+    const e = document.createElement("img");
+    e.src = src;
+    classes.forEach(c=>e.classList.add(c));
+    return e;
+}
+
+export function replace(oldE: HTMLElement, newE: HTMLElement) {
+    parent(oldE).replaceChild(newE, oldE);
+}
+
 export function scrollMinimallyIntoView(e: HTMLElement, parentE?: HTMLElement) {
 	const p = parentE || parent(e);
 	const top = e.offsetTop - p.offsetTop;
@@ -76,6 +105,10 @@ export function firstChildMatching<T extends Element>
 (e: T, filter: UFunction<T, boolean>) {
 	return <T>(children(e).filter(filter).pop());
 }
+export function firstChildNamed<T extends Element>
+(e: T, nodeName: string) {
+	return firstChildMatching(e, ee=>ee.nodeName==nodeName);
+}
 
 export function hasClass(e: HTMLElement, c: string) {
 	return e.classList.contains(c);
@@ -94,6 +127,11 @@ export function hide(e: HTMLElement) {
 	if (e.style.display=="none") return;
 	e.dataset["prevDisplayValue"] = e.style.display || "";
 	e.style.display = "none"; 
+}
+
+export function toggle(shown: boolean, ...el: HTMLElement[]) {
+	if (shown) show.apply(null, el);
+	else hide.apply(show, el);
 }
 
 export function show(e: HTMLElement) {

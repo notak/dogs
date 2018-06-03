@@ -39,6 +39,10 @@ export function last<V>(haystack: V[]): V {
 	return haystack[haystack.length-1];
 }
 
+export function firstIfAny<V>(haystack: V[]): V|undefined {
+	return haystack.length ? haystack[0] : undefined;
+}
+
 export function lastIfAny<V>(haystack: V[]): V|undefined {
 	return haystack.length ? last(haystack) : undefined;
 }

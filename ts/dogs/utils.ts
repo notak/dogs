@@ -93,6 +93,14 @@ export function ifTruthy<T,R> (
 	return v ? action(v) : undefined;
 }
 
+export function ifTruthyOr<T,R> (
+	v: T|undefined|null, 
+	action: UFunction<T, R>, 
+	or: R | Provider<R>
+) : R {
+	return v ? action(v) : typeof(or)=="function" ? or() : or;
+}
+
 export function logAndReturn(s: any) {
 	console.log(s);
 	return s;
