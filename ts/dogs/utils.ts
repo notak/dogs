@@ -101,7 +101,7 @@ export function ifTruthyOr<T,R> (
 	return v ? action(v) : typeof(or)=="function" ? or() : or;
 }
 
-export function logAndReturn(s: any) {
+export function logAndReturn<Y>(s: Y) {
 	console.log(s);
 	return s;
 }

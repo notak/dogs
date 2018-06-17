@@ -73,6 +73,10 @@ export function attr(e: Element, name: string) {
 	return e.getAttribute(name);
 }
 
+export function intData(e: HTMLElement, name: string) {
+	return asInt(e.dataset[name] || "");
+}
+
 export function find(querySelector: string) {
 	return <HTMLElement>document.querySelector(querySelector);
 }

@@ -1,8 +1,10 @@
 import { UFunction } from "./utils.js";
 
-export function makeMap<T,K> (array: T[], keyer: UFunction<T, K>): Map<K,T> {
+export type ArrOrRO<V> = V[] | ReadonlyArray<V>;
+
+export function makeMap<T,K> (array: ArrOrRO<T>, keyer: UFunction<T,K>) {
 	const out = new Map();
-	array.forEach(i=>out.set(keyer(i), i));
+	array.slice().forEach(i=>out.set(keyer(i), i));
 	return out;
 }
 
@@ -12,41 +14,65 @@ export function remove<T>(haystack: T[], needle: T): number {
 	return current;
 }
 
-export function indexOfMatching<T>(haystack: T[], test: UFunction<T, boolean>): number {
+export function indexOfMatching<T>(
+	haystack: ArrOrRO<T>, 
+	test: UFunction<T, boolean>
+): number {
 	for (let i=0; i<haystack.length; i++) if (test(haystack[i])) return i;
 	return -1;	
 }
 
-export function removeMatching<T>(haystack: T[], test: UFunction<T, boolean>): number {
+export function removeMatching<T>(
+	haystack: T[], 
+	test: UFunction<T, boolean>
+): number {
 	const current = indexOfMatching(haystack, test);
 	if (current>=0) haystack.splice(current, 1);
 	return current;
 }
 
-export function equals(a: any[], b: any[]) {
+export function withoutMatching<T>(
+	haystack: ArrOrRO<T>, 
+	test: UFunction<T, boolean>
+): T[] {
+	const out = haystack.slice();
+	removeMatching(out, test);
+	return out;
+}
+
+export function equals(a: any[], b: ArrOrRO<any>) {
 	return a.length==b.length && a.every((v,i)=> v === b[i])
 }
 
-export function contains<Y>(haystack: Y[], ...needle: Y[]) {
+export function contains<Y>(haystack: ArrOrRO<Y>, ...needle: Y[]) {
 	return needle.some(n=>haystack.indexOf(n)>=0);
 }
 
-export function after<V>(haystack: V[], subject: V, object: V) {
+export function after<V>(haystack: ArrOrRO<V>, subject: V, object: V) {
 	return haystack.indexOf(subject) > haystack.indexOf(object);
 }
 
-export function last<V>(haystack: V[]): V {
+export function last<V>(haystack: ArrOrRO<V>): V {
 	return haystack[haystack.length-1];
 }
 
-export function firstIfAny<V>(haystack: V[]): V|undefined {
+export function firstIfAny<V>(haystack: ArrOrRO<V>): V|undefined {
 	return haystack.length ? haystack[0] : undefined;
 }
 
-export function lastIfAny<V>(haystack: V[]): V|undefined {
+export function lastIfAny<V>(haystack: ArrOrRO<V>): V|undefined {
 	return haystack.length ? last(haystack) : undefined;
 }
 
-export function min(a: Array<number>) { return Math.min.apply(null, a); }
+export function shiftOr<V>(arr: V[], or: V): V {
+	return arr.length > 0 ? <V>arr.shift() : or;
+}
 
-export function max(a: Array<number>) { return Math.max.apply(null, a); }
+export function min(a: ArrOrRO<number>) { return Math.min.apply(null, a); }
+
+export function max(a: ArrOrRO<number>) { return Math.max.apply(null, a); }
+
+export function sum(a: ArrOrRO<number>) {
+	// Needs a slice to compile...
+	return a.slice().reduce((v, r)=>v + r, 0); 
+}
