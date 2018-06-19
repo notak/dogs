@@ -1,4 +1,4 @@
-import { UFunction } from "./utils.js";
+import { UFunction, BiFunction } from "./utils.js";
 
 export type ArrOrRO<V> = V[] | ReadonlyArray<V>;
 
@@ -62,6 +62,12 @@ export function firstIfAny<V>(haystack: ArrOrRO<V>): V|undefined {
 
 export function lastIfAny<V>(haystack: ArrOrRO<V>): V|undefined {
 	return haystack.length ? last(haystack) : undefined;
+}
+
+export function withTopAndTail<V, D>(
+	haystack: ArrOrRO<V>, action: BiFunction<V, V, D>
+) {
+	return haystack.length ? action(haystack[0], last(haystack)) : undefined;
 }
 
 export function shiftOr<V>(arr: V[], or: V): V {

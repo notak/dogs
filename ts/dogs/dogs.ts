@@ -1,4 +1,4 @@
-import { asInt, Consumer, UFunction } from "./utils.js";
+import { asInt, UFunction, ifTruthy } from "./utils.js";
 
 //Edge polyfill
 let w:any = window
@@ -60,7 +60,6 @@ export function scrollxMinimallyIntoView(e: HTMLElement, parentE?: HTMLElement) 
 }
 
 export function ancestor(e: HTMLElement, sel: string, stopAt?: HTMLElement) {
-	let fullSel = selectorStart(e) + sel;
 	for (; e && e!=document.body && e!=stopAt && !e.matches(sel); e = parent(e));
 	return (e && e.matches(sel)) ? e : undefined;
 }
@@ -118,8 +117,8 @@ export function hasClass(e: HTMLElement, c: string) {
 	return e.classList.contains(c);
 }
 
-export function hasDescendant(parent: Element, e: Element) {
-	for (; e; e = <Element>e.parentElement) if (e == parent) return true;
+export function hasDescendant(parentE: Element, e: Element) {
+	for (; e; e=parent(e)) if (e == parentE) return true;
 	return false;
 }
 
@@ -127,7 +126,7 @@ export function css(e: HTMLElement) {
 	return getComputedStyle(e); 
 }
 
-export function hide(e: HTMLElement) { 
+export function hide(e: HTMLElement) {
 	if (e.style.display=="none") return;
 	e.dataset["prevDisplayValue"] = e.style.display || "";
 	e.style.display = "none"; 
@@ -147,16 +146,13 @@ export function isHidden(e: HTMLElement) {
 }
 
 export function childFocused(e: HTMLElement) {
-	let active = document.activeElement;
-	return active && hasDescendant(e, <HTMLElement>active);
+	return ifTruthy(document.activeElement, a=>hasDescendant(e, a)) || false;
 }
 
 function selectorStart(e: Element) {
-	let out:string[] = [];
-	for (let el = e; el; el = <Element>el.parentNode) {
-		out.unshift(el.tagName);
-	}
-	return out.join(" ") + " ";
+	let out = "";
+	for (; e; e = <Element>e.parentElement) out = e.tagName + " " + out;
+	return out;
 }
 
 export function clone<T extends Element>(e: T): T {

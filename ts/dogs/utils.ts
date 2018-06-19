@@ -28,10 +28,6 @@ export function objectify<T>(i: T|string, conversion: UFunction<string, T>): T {
 	return typeof i == "string" ? conversion(<any>i) : <any>i;
 }
 
-export function ifString(i: number|string, conversion: Function): number {
-	return typeof i != "number" ? conversion(i) : i;
-}
-
 export function ifNumber<T>(i: T|number, conversion: Function): T {
 	return typeof i == "number" ? conversion(i) : i;
 }
@@ -39,7 +35,7 @@ export function ifNumber<T>(i: T|number, conversion: Function): T {
 export function asNumber<T>(
 	i: number|T, conversion: UFunction<T, number>
 ): number {
-	return typeof i == "number" ? <any>i : conversion(<any>i);
+	return typeof i == "number" ? i : conversion(i);
 }
 
 export function lpad0(i: string, template: string) {
@@ -58,25 +54,15 @@ export function gteLt (lower: number, v: number, higher: number) {
 	return v>=lower && v<higher
 }
 
-export class FMap<K, V> {
-	public map = new Map<K, V>();
-	get(k: K) { return this.map.get(k); }
-	set(k: K, v: V) { return this.map.set(k, v); } 
-	delete(k: K) { return this.map.delete(k); }
-		
-	run(k: K, action: Consumer<V>) {
-		ifTruthy(this.map.get(k), action);
-	}
+export function run<K,V>(map: Map<K, V>, k: K, action: Consumer<V>) {
+	ifTruthy(map.get(k), action);
+}
 
-	/** computeIfAbsent in Java terms */
-	getOrSet(k: K, provider: Provider<V>) { 
-		let v = this.get(k);
-		if (!v) this.set(k, v = provider());
-		return v;
-	}
-	forEach(consumer: Consumer<V>) {
-		this.map.forEach(consumer);
-	}
+/** computeIfAbsent in Java terms */
+export function getOrSet<K,V>(map: Map<K, V>, k: K, provider: Provider<V>) {
+	let v = map.get(k);
+	if (!v) map.set(k, v = provider());
+	return v;
 }
 
 export function blobToDataURL(file: Blob): Promise<string> {
@@ -85,6 +71,14 @@ export function blobToDataURL(file: Blob): Promise<string> {
 		reader.onload = (e)=>r(<string>(<any>e.target).result);
 		reader.readAsDataURL(file);
 	});
+}
+
+export function ifBothTruthy<T,V,R> (
+	t: T|undefined|null, 
+	v: V|undefined|null, 
+	action: BiFunction<T, V, R>
+) : R|undefined {
+	return t && v ? action(t, v) : undefined;
 }
 
 export function ifTruthy<T,R> (
