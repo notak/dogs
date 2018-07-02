@@ -8,6 +8,7 @@ export function makeMap<T,K> (array: ArrOrRO<T>, keyer: UFunction<T,K>) {
 	return out;
 }
 
+/** Remove needle from haystack if present, and return the previous position */
 export function remove<T>(haystack: T[], needle: T): number {
 	const current = haystack.indexOf(needle);
 	if (current>=0) haystack.splice(current, 1);
@@ -81,4 +82,11 @@ export function max(a: ArrOrRO<number>) { return Math.max.apply(null, a); }
 export function sum(a: ArrOrRO<number>) {
 	// Needs a slice to compile...
 	return a.slice().reduce((v, r)=>v + r, 0); 
+}
+
+export function addIfAbsent<V>(haystack: V[], needle: V) {
+	if (haystack.indexOf(needle) < 0) {
+		haystack.push(needle);
+		return true;
+	} else return false;
 }

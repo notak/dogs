@@ -60,7 +60,8 @@ export function scrollxMinimallyIntoView(e: HTMLElement, parentE?: HTMLElement) 
 }
 
 export function ancestor(e: HTMLElement, sel: string, stopAt?: HTMLElement) {
-	for (; e && e!=document.body && e!=stopAt && !e.matches(sel); e = parent(e));
+	for (; e && e!=document.body && e!=stopAt && !e.matches(sel); e = parent(e))
+	{}
 	return (e && e.matches(sel)) ? e : undefined;
 }
 
