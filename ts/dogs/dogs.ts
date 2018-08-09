@@ -7,8 +7,21 @@ if (w["Element"]) {
 	ep["matches"] = ep["matches"] || ep["msMatchesSelector"];
 }
 
+export function getChildValue(el: HTMLElement, clsName: string) {
+	return firstInput(el, "." + clsName).value
+}
+
+export function getChildTexts(el: HTMLElement, names: string[]) {
+	let out:any = {}
+	names.forEach(k=>out[k] = getChildValue(el, k));
+	return out;
+}
+
 export function setChildText(el: HTMLElement, clsName: string, text: string) {
-    all(el, "." + clsName).forEach(e=>e.innerText = text);
+	all(el, "." + clsName).forEach(e=>{
+		if (e instanceof HTMLInputElement) e.value = text;
+		else e.innerText = text;
+	})
 }
 export function setChildTexts(el: HTMLElement, values: any) {
     for(let k in values) setChildText(el, k, values[k]);
@@ -156,8 +169,8 @@ function selectorStart(e: Element) {
 	return out;
 }
 
-export function clone<T extends Element>(e: T): T {
-	return <T>e.cloneNode();
+export function clone<T extends Element>(e: T, deep: boolean=false): T {
+	return <T>e.cloneNode(deep);
 }
 export function first<T extends Element>(e: T, selector: string): T {
 	return <T>e.querySelector(selectorStart(e) + selector);
@@ -170,6 +183,12 @@ export function firstProgress(e: HTMLElement, selector: string) {
 }
 export function firstSVG(e: HTMLElement, selector: string) {
 	return <SVGElement>(<any>first(e, selector));
+}
+export function firstImage(e: HTMLElement, selector: string) {
+	return <HTMLImageElement>first(e, selector);
+}
+export function firstAnchor(e: HTMLElement, selector: string) {
+	return <HTMLAnchorElement>first(e, selector);
 }
 export function findInput(querySelector: string) {
 	return <HTMLInputElement>find(querySelector);

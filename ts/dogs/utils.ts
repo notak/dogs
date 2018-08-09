@@ -99,3 +99,34 @@ export function logAndReturn<Y>(s: Y) {
 	console.log(s);
 	return s;
 }
+
+export class Chain<T> {
+	constructor(
+		public readonly value: T | undefined
+	) {}
+
+	then<R>(action: UFunction<T | undefined, R>): Chain<R> {
+		return new Chain(action(this.value));
+	}
+
+	ifTruthy<R>(action: UFunction<T, R>): Chain<R> {
+		return new Chain(this.value ? action(this.value) : undefined);
+	}
+
+	else(alt: T): T {
+		return this.value || alt;
+	}
+
+	elseGet(alt: Provider<T>) {
+		return this.value || alt();
+	}
+}
+
+export function chain<T>(value: T) {
+	return new Chain(value);
+}
+
+export function tee<T>(t: T, action: Consumer<T>) {
+    action(t);
+    return t;
+}

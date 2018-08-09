@@ -1,6 +1,30 @@
 import { ancestor } from "./dogs.js";
 import { Consumer } from "./utils.js";
 
+export class Listen {
+    private listeners: Function[] = [];
+
+    public update(conditional: boolean, updater: Function) {
+        if (!conditional) return;
+        updater();
+        this.fire();
+        return conditional;
+    }
+    public fire() {
+        this.listeners.forEach(l=>l());
+    }
+    public on(l: Function) {
+        this.listeners.push(l);
+    }
+    public off(l: Function) {
+        this.listeners = this.listeners.filter(i=>i!=l);
+    }
+}
+
+export interface HasListener {
+	readonly listen: Listen;
+}
+
 export interface EventHandler {
 	(evt: Event, e: HTMLElement) : void
 }
@@ -95,12 +119,12 @@ export function onEscDown(e: HTMLElement, handler: KeyEventHandler) {
 export function noModifierKeys(evt: KeyboardEvent) {
 	return !evt.ctrlKey && !evt.altKey && !evt.metaKey
 }
-export function killAnd<T extends Event>(e: T, handler: Consumer<T>) {
+export function killAnd<T extends Event, V>(e: T, handler: (t:T)=>V) {
 	e.preventDefault();
-	if (e.cancelBubble) (<any>e).cancelBubble();
-	handler(e);
+	e.cancelBubble = true;
+	return handler(e);
 }
 export function killEvent(e: Event) {
 	e.preventDefault();
-	if (e.cancelBubble) (<any>e).cancelBubble();
+	e.cancelBubble = true;
 }
