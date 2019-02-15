@@ -26,6 +26,9 @@ export function setChildText(el: HTMLElement, clsName: string, text: string) {
 export function setChildTexts(el: HTMLElement, values: any) {
     for(let k in values) setChildText(el, k, values[k]);
 }
+export function takeChildTexts(el: HTMLElement, values: any, ...keys: string[]) {
+    keys.forEach(k=>setChildText(el, k, values[k]));
+}
 
 export function createEl(tagName = "div", ...classes: string[] ) {
     const e = document.createElement(tagName);
